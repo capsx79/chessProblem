@@ -1,0 +1,256 @@
+package chess4;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+
+
+public class queens {
+
+	private static int N = 0;
+	private static int R = 0;
+	private static int T = 0;
+	private static int A = 0;
+	private static int C = 0;
+   //devuelve verdadero si la posicion q[n] no entra en conflicto con
+   // las otras reinas
+
+    public static boolean isValid(int[] q, int n) {
+        for (int i = 0; i < n; i++) {
+            if (q[i] == q[n])             return false;   // columna
+            if ((q[i] - q[n]) == (n - i)) return false;   // diagonal superior
+            if ((q[n] - q[i]) == (n - i)) return false;   // diagonal inferior
+        }
+        return true;
+    }
+    
+    
+
+   //imprime q donde va la reina y forma el tablero con los asteriscos
+
+    public static void printQueens(char[][] q) {
+        int N = q.length;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (q[i][j] == 'T') System.out.print("T ");
+                else
+                	if (q[i][j] == 'R') System.out.print("R ");
+                	else
+                		if (q[i][j] == 'A') System.out.print("A ");
+                		else
+                			if (q[i][j] == 'C') System.out.print("C ");
+                		else           System.out.print("* ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+
+   //encuentra todas las posiciones usando vuelta atras
+    public static void queen() {
+        char[][] q = new char[N][N];
+        for (int i = 0; i < q.length; i++) {
+        	for (int j = 0; j < q.length; j++) {
+        		q[i][j]=' ';
+        	}
+        }
+        queen(q, 0, 0, 0,0);
+    }
+
+    public static void queen(char[][] q, int r, int t, int a, int c) {
+        //int N = q.length;
+        if (r == R && t==T && a==A) printQueens(q);
+        else {
+            for (int i = 0; i < q.length; i++) {
+            	for (int j = 0; j < q.length; j++) {
+            		//If already quens put one
+            		if(r!=R){
+            			
+            			if (isValidReina(q, i, j)){
+            				q[i][j] = 'R';
+                        	queen(q, r+1,t,a,c);
+                        	q[i][j] = ' ';
+                        }
+            		}
+            		else{
+            			//If already towers put one
+            			if(t!=T){
+            				if (isValidTorre(q, i, j)){
+            					q[i][j] = 'T';
+                            	queen(q, r,t+1,a,c);
+                            	q[i][j] = ' ';
+                            }
+            			}
+            			else{
+                			if(a!=A){
+                				if (isValidAlfil(q, i, j)){
+                					q[i][j] = 'A';
+                                	queen(q, r,t,a+1,c);
+                                	q[i][j] = ' ';
+                                }
+                			}
+                			else{
+                				if(c!=C){
+                					if (isValidCaballo(q, i, j)){
+                    					q[i][j] = 'C';
+                                    	queen(q, r,t,a,c+1);
+                                    	q[i][j] = ' ';
+                                    }
+                				}
+                			}
+                				
+                		}
+            		}
+            			
+            	}
+                
+                
+            }
+        }
+    }
+
+
+    public static void main(String[] args) throws IOException {
+
+InputStreamReader isr = new InputStreamReader(System.in);
+BufferedReader br = new BufferedReader (isr);
+
+	System.out.println("escriba el tamaño del tablero (n*n)");
+	N = Integer.parseInt(br.readLine());
+
+	System.out.println("escriba el numero de reinas");
+      R = Integer.parseInt(br.readLine());
+      
+      System.out.println("escriba el numero de torres");
+      T = Integer.parseInt(br.readLine());
+      
+      System.out.println("escriba el numero de alfiles");
+      A = Integer.parseInt(br.readLine());
+      
+      System.out.println("escriba el numero de caballos");
+      C = Integer.parseInt(br.readLine());
+      
+        queen();// digito el numero de reinas
+    }
+    
+    
+    
+    public static boolean isValidTorre(char[][] q, int a,int b) {
+    	
+    	
+    	
+    	
+    	for(int i =0; i<q.length;i++){
+    		for(int j=0; j<q.length;j++)
+    		{
+    			
+    			if(q[i][j]!=' ' & (i==a||b==j)){
+					return false;
+    			}
+    			if(!isValidWhithOthers(q, a, b, i, j)){
+	  				return false;
+	  			}
+    			
+    		}
+    	}
+    	return true;
+    	    	
+    
+    }
+    
+    
+  public static boolean isValidAlfil(char[][] q, int a,int b) {
+    	
+    	for(int i =0; i<q.length;i++){
+    		for(int j=0; j<q.length;j++)
+    		{
+    			
+    			if(q[i][j]!=' ' & (i-j==a-b || i+j==a+b || j-b == i-a || j-b == a-i)){
+					return false;
+				}
+    			
+    			if(!isValidWhithOthers(q, a, b, i, j)){
+	  				return false;
+	  			}
+    	}
+    	}
+    	return true;
+    }
+  
+  public static boolean isValidReina(char[][] q, int a,int b) {
+  	
+  	for(int i =0; i<q.length;i++){
+  		for(int j=0; j<q.length;j++)
+  		{
+  			
+  			if(q[i][j]!=' ' & (i-j==a-b || i+j==a+b || j-b == i-a || j-b == a-i || i==a||b==j)){
+					return false;
+				}
+  			
+  			if(!isValidWhithOthers(q, a, b, i, j)){
+  				return false;
+  			}
+  	}
+  	}
+  	return true;
+  }
+  
+  
+  
+  public static boolean isValidCaballo(char[][] q, int a,int b) {
+	  	
+	  	for(int i =0; i<q.length;i++){
+	  		for(int j=0; j<q.length;j++)
+	  		{
+	  			//Comprobamos que la ficha no coma a ninguna
+	  			if(q[i][j]!=' ' & q[i+1][j-2]!=' ' & q[i+2][j+1]!=' ' & q[i+2][j-1]!=' '& q[i+1][j-2]!=' '& q[i-1][j-2]!=' '& q[i-2][j-1]!=' '& q[i-1][j+2]!=' '& q[i-2][j+1]!=' '){
+						return false;
+					}
+	  			
+	  			if(!isValidWhithOthers(q, a, b, i, j)){
+	  				return false;
+	  			}
+	  	
+	  		}
+	  	}
+	  	return true;
+	  }
+	  	
+	  	
+	    public static boolean isValidWhithOthers(char[][] q, int a,int b,int i,int j) {
+			//comprobamos que ningun alfil la coma a ella
+  			if(q[i][j]=='A'){
+  				if(i-j==a-b || i+j==a+b || j-b == i-a || j-b == a-i){
+  					return false;
+  				}
+  			}
+  			//comprobamos que ninguna torre la coma a ella
+  			if(q[i][j]=='T'){
+  				if(i==a||b==j)
+  					return false;
+  			}
+  			//comprobamos que ninguna reina la coma a ella
+  			if(q[i][j]=='R'){
+  				if(i-j==a-b || i+j==a+b || j-b == i-a || j-b == a-i || i==a||b==j){
+  					return false;
+  				}
+  			}
+  			//comprobamos que ningun caballo la coma a ella	
+  			if(q[i][j]=='C'){
+	  			if(i+1==a && j-2==b || i+2==a && j+1==b || i+2==a && j-1 ==b || i+1==a && j-2==b ||i-1==a && j-2==b ||i-2==a && j-1==b ||i-1==a && j+2==b|| i-2==a && j+1==b){
+	  				return false;
+	  			}
+  			
+  			}
+  			return true;
+	    }
+	    
+    	
+    	
+    	
+
+  
+
+}
