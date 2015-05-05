@@ -13,6 +13,7 @@ public class queens {
 	private static int T = 0;
 	private static int A = 0;
 	private static int C = 0;
+	private static int E = 0;
    //devuelve verdadero si la posicion q[n] no entra en conflicto con
    // las otras reinas
 
@@ -40,6 +41,8 @@ public class queens {
                 		if (q[i][j] == 'A') System.out.print("A ");
                 		else
                 			if (q[i][j] == 'C') System.out.print("C ");
+                			else
+                    			if (q[i][j] == 'E') System.out.print("E ");
                 		else           System.out.print("* ");
             }
             System.out.println();
@@ -56,12 +59,12 @@ public class queens {
         		q[i][j]=' ';
         	}
         }
-        queen(q, 0, 0, 0,0);
+        queen(q, 0, 0, 0, 0, 0);
     }
 
-    public static void queen(char[][] q, int r, int t, int a, int c) {
+    public static void queen(char[][] q, int r, int t, int a, int c,int e) {
         //int N = q.length;
-        if (r == R && t==T && a==A) printQueens(q);
+        if (r == R && t==T && a==A && c==C && e==E) printQueens(q);
         else {
             for (int i = 0; i < q.length; i++) {
             	for (int j = 0; j < q.length; j++) {
@@ -70,7 +73,7 @@ public class queens {
             			
             			if (isValidReina(q, i, j)){
             				q[i][j] = 'R';
-                        	queen(q, r+1,t,a,c);
+                        	queen(q, r+1,t,a,c,e);
                         	q[i][j] = ' ';
                         }
             		}
@@ -79,7 +82,7 @@ public class queens {
             			if(t!=T){
             				if (isValidTorre(q, i, j)){
             					q[i][j] = 'T';
-                            	queen(q, r,t+1,a,c);
+                            	queen(q, r,t+1,a,c,e);
                             	q[i][j] = ' ';
                             }
             			}
@@ -87,7 +90,7 @@ public class queens {
                 			if(a!=A){
                 				if (isValidAlfil(q, i, j)){
                 					q[i][j] = 'A';
-                                	queen(q, r,t,a+1,c);
+                                	queen(q, r,t,a+1,c,e);
                                 	q[i][j] = ' ';
                                 }
                 			}
@@ -95,10 +98,18 @@ public class queens {
                 				if(c!=C){
                 					if (isValidCaballo(q, i, j)){
                     					q[i][j] = 'C';
-                                    	queen(q, r,t,a,c+1);
+                                    	queen(q, r,t,a,c+1,e);
                                     	q[i][j] = ' ';
                                     }
                 				}
+                				else{
+                    				if(c!=C){
+                    					if (isValidCaballo(q, i, j)){
+                        					q[i][j] = 'E';
+                                        	queen(q, r,t,a,c,e+1);
+                                        	q[i][j] = ' ';
+                                        }
+                    				}
                 			}
                 				
                 		}
@@ -110,7 +121,7 @@ public class queens {
             }
         }
     }
-
+    }
 
     public static void main(String[] args) throws IOException {
 
@@ -132,7 +143,11 @@ BufferedReader br = new BufferedReader (isr);
       System.out.println("escriba el numero de caballos");
       C = Integer.parseInt(br.readLine());
       
+      System.out.println("escriba el numero de relles");
+      E = Integer.parseInt(br.readLine());
+      
         queen();// digito el numero de reinas
+        System.out.println("FIN");
     }
     
     
@@ -146,7 +161,7 @@ BufferedReader br = new BufferedReader (isr);
     		for(int j=0; j<q.length;j++)
     		{
     			
-    			if(q[i][j]!=' ' & (i==a||b==j)){
+    			if(q[i][j]!=' ' && (i==a||b==j)){
 					return false;
     			}
     			if(!isValidWhithOthers(q, a, b, i, j)){
@@ -167,7 +182,7 @@ BufferedReader br = new BufferedReader (isr);
     		for(int j=0; j<q.length;j++)
     		{
     			
-    			if(q[i][j]!=' ' & (i-j==a-b || i+j==a+b || j-b == i-a || j-b == a-i)){
+    			if(q[i][j]!=' ' && (i-j==a-b || i+j==a+b || j-b == i-a || j-b == a-i)){
 					return false;
 				}
     			
@@ -185,7 +200,7 @@ BufferedReader br = new BufferedReader (isr);
   		for(int j=0; j<q.length;j++)
   		{
   			
-  			if(q[i][j]!=' ' & (i-j==a-b || i+j==a+b || j-b == i-a || j-b == a-i || i==a||b==j)){
+  			if(q[i][j]!=' ' && (i-j==a-b || i+j==a+b || j-b == i-a || j-b == a-i || i==a||b==j)){
 					return false;
 				}
   			
@@ -200,14 +215,18 @@ BufferedReader br = new BufferedReader (isr);
   
   
   public static boolean isValidCaballo(char[][] q, int a,int b) {
+	  	int n=q.length;
 	  	
+	  //Comprobamos que la ficha no coma a ninguna
+			if(q[a][b]!=' ' || ((a+1<n && b-2>=0 && q[a+1][b-2]!=' ' ) || (a+2<n && b+1<n && q[a+2][b+1]!=' ') || (a+2<n && b-1>=0 && q[a+2][b-1]!=' ' )
+					|| ( a+1<n && b+2<n && q[a+1][b+2]!=' ')|| (a-1>=0 && b-2>=0 && q[a-1][b-2]!=' ') || (a-2>=0 && b-1>=0 && q[a-2][b-1]!=' ')|| 
+					(a-1>=0 && b+2<n && q[a-1][b+2]!=' ' )||(a-2>=0 && b+1<n && q[a-2][b+1]!=' '))){
+				return false;
+			}
 	  	for(int i =0; i<q.length;i++){
 	  		for(int j=0; j<q.length;j++)
 	  		{
-	  			//Comprobamos que la ficha no coma a ninguna
-	  			if(q[i][j]!=' ' & q[i+1][j-2]!=' ' & q[i+2][j+1]!=' ' & q[i+2][j-1]!=' '& q[i+1][j-2]!=' '& q[i-1][j-2]!=' '& q[i-2][j-1]!=' '& q[i-1][j+2]!=' '& q[i-2][j+1]!=' '){
-						return false;
-					}
+	  			
 	  			
 	  			if(!isValidWhithOthers(q, a, b, i, j)){
 	  				return false;
@@ -218,6 +237,28 @@ BufferedReader br = new BufferedReader (isr);
 	  	return true;
 	  }
 	  	
+  public static boolean isValidRey(char[][] q, int a,int b) {
+	  	int n=q.length;
+	  	
+	  //Comprobamos que la ficha no coma a ninguna
+			if(q[a][b]!=' ' || ((a+1<n && b+1<n && q[a+1][b+1]!=' ' ) || (a+1<n && b-1>=0 && q[a+1][b-1]!=' ') || (a-1>=0 && b-1>=0 && q[a-1][b-1]!=' ' )
+					|| ( a-1>=0 && b+1<n && q[a-1][b+1]!=' ')|| (a+1<n && q[a+1][b]!=' ') || (a-1>=0 && q[a-1][b]!=' ')|| 
+					(b+1<n && q[a][b+1]!=' ' )||(b-1>=0 && q[a][b-1]!=' '))){
+				return false;
+			}
+	  	for(int i =0; i<q.length;i++){
+	  		for(int j=0; j<q.length;j++)
+	  		{
+	  			
+	  			
+	  			if(!isValidWhithOthers(q, a, b, i, j)){
+	  				return false;
+	  			}
+	  	
+	  		}
+	  	}
+	  	return true;
+	  }
 	  	
 	    public static boolean isValidWhithOthers(char[][] q, int a,int b,int i,int j) {
 			//comprobamos que ningun alfil la coma a ella
@@ -244,8 +285,18 @@ BufferedReader br = new BufferedReader (isr);
 	  			}
   			
   			}
+  			
+  		//comprobamos que ningun rey la coma a ella	
+  			if(q[i][j]=='C'){
+	  			if(i+1==a && j==b || i+1==a && j+1==b || i+1==a && j-1 ==b || i-1==a && j-1==b ||i-1==a && j+1==b ||i-1==a && j==b ||i==a && j+1==b|| i==a && j-1==b){
+	  				return false;
+	  			}
+  			
+  			}
   			return true;
 	    }
+	    
+	    
 	    
     	
     	
