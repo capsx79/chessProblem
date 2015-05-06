@@ -3,6 +3,7 @@ package chess4;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 
 
@@ -14,24 +15,26 @@ public class queens {
 	private static int A = 0;
 	private static int C = 0;
 	private static int E = 0;
-   //devuelve verdadero si la posicion q[n] no entra en conflicto con
-   // las otras reinas
-
-    public static boolean isValid(int[] q, int n) {
-        for (int i = 0; i < n; i++) {
-            if (q[i] == q[n])             return false;   // columna
-            if ((q[i] - q[n]) == (n - i)) return false;   // diagonal superior
-            if ((q[n] - q[i]) == (n - i)) return false;   // diagonal inferior
-        }
-        return true;
-    }
-    
+	
+	static ArrayList<char[][]> tables;
+	
+	
+	
     
 
-   //imprime q donde va la reina y forma el tablero con los asteriscos
+   //Print Table
 
     public static void printQueens(char[][] q) {
         int N = q.length;
+        if(!repitTable(q)){
+        
+        	
+        char[][] t= new char[N][N];
+        
+        rellenarTabla(q,t);
+                
+        tables.add(t);
+        
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (q[i][j] == 'T') System.out.print("T ");
@@ -48,10 +51,11 @@ public class queens {
             System.out.println();
         }
         System.out.println();
+        }
     }
 
 
-   //encuentra todas las posiciones usando vuelta atras
+  
     public static void queen() {
         char[][] q = new char[N][N];
         for (int i = 0; i < q.length; i++) {
@@ -62,15 +66,16 @@ public class queens {
         queen(q, 0, 0, 0, 0, 0);
     }
 
+    
     public static void queen(char[][] q, int r, int t, int a, int c,int e) {
-        //int N = q.length;
+    	
         if (r == R && t==T && a==A && c==C && e==E) printQueens(q);
         else {
             for (int i = 0; i < q.length; i++) {
             	for (int j = 0; j < q.length; j++) {
             		//If already quens put one
             		if(r!=R){
-            			
+            			//Try to put new queen
             			if (isValidReina(q, i, j)){
             				q[i][j] = 'R';
                         	queen(q, r+1,t,a,c,e);
@@ -78,7 +83,7 @@ public class queens {
                         }
             		}
             		else{
-            			//If already towers put one
+            			//Try to put new tower
             			if(t!=T){
             				if (isValidTorre(q, i, j)){
             					q[i][j] = 'T';
@@ -87,6 +92,7 @@ public class queens {
                             }
             			}
             			else{
+            				//Try to put new bishop
                 			if(a!=A){
                 				if (isValidAlfil(q, i, j)){
                 					q[i][j] = 'A';
@@ -95,6 +101,7 @@ public class queens {
                                 }
                 			}
                 			else{
+                				//Try to put new horse
                 				if(c!=C){
                 					if (isValidCaballo(q, i, j)){
                     					q[i][j] = 'C';
@@ -103,8 +110,9 @@ public class queens {
                                     }
                 				}
                 				else{
-                    				if(c!=C){
-                    					if (isValidCaballo(q, i, j)){
+                					//Try to put new king
+                    				if(e!=E){
+                    					if (isValidRey(q, i, j)){
                         					q[i][j] = 'E';
                                         	queen(q, r,t,a,c,e+1);
                                         	q[i][j] = ' ';
@@ -125,37 +133,40 @@ public class queens {
 
     public static void main(String[] args) throws IOException {
 
+    	try{
 InputStreamReader isr = new InputStreamReader(System.in);
 BufferedReader br = new BufferedReader (isr);
 
-	System.out.println("escriba el tamaño del tablero (n*n)");
+	System.out.println("Type table dimension (n*n) n:");
 	N = Integer.parseInt(br.readLine());
 
-	System.out.println("escriba el numero de reinas");
+	System.out.println("Enter nomber of queens:");
       R = Integer.parseInt(br.readLine());
       
-      System.out.println("escriba el numero de torres");
+      System.out.println("Enter number of rocks:");
       T = Integer.parseInt(br.readLine());
       
-      System.out.println("escriba el numero de alfiles");
+      System.out.println("Enter number of bishop:");
       A = Integer.parseInt(br.readLine());
       
-      System.out.println("escriba el numero de caballos");
+      System.out.println("Enter number of horses:");
       C = Integer.parseInt(br.readLine());
       
-      System.out.println("escriba el numero de relles");
+      System.out.println("Enter number of kings:");
       E = Integer.parseInt(br.readLine());
       
-        queen();// digito el numero de reinas
-        System.out.println("FIN");
+      tables = new ArrayList<char[][]>();
+        queen();
+        System.out.println("END");
+        
+    	} catch (Exception e) {
+        	System.out.println("Technical problem ocurred");
+		}
     }
     
     
     
     public static boolean isValidTorre(char[][] q, int a,int b) {
-    	
-    	
-    	
     	
     	for(int i =0; i<q.length;i++){
     		for(int j=0; j<q.length;j++)
@@ -217,7 +228,6 @@ BufferedReader br = new BufferedReader (isr);
   public static boolean isValidCaballo(char[][] q, int a,int b) {
 	  	int n=q.length;
 	  	
-	  //Comprobamos que la ficha no coma a ninguna
 			if(q[a][b]!=' ' || ((a+1<n && b-2>=0 && q[a+1][b-2]!=' ' ) || (a+2<n && b+1<n && q[a+2][b+1]!=' ') || (a+2<n && b-1>=0 && q[a+2][b-1]!=' ' )
 					|| ( a+1<n && b+2<n && q[a+1][b+2]!=' ')|| (a-1>=0 && b-2>=0 && q[a-1][b-2]!=' ') || (a-2>=0 && b-1>=0 && q[a-2][b-1]!=' ')|| 
 					(a-1>=0 && b+2<n && q[a-1][b+2]!=' ' )||(a-2>=0 && b+1<n && q[a-2][b+1]!=' '))){
@@ -240,7 +250,6 @@ BufferedReader br = new BufferedReader (isr);
   public static boolean isValidRey(char[][] q, int a,int b) {
 	  	int n=q.length;
 	  	
-	  //Comprobamos que la ficha no coma a ninguna
 			if(q[a][b]!=' ' || ((a+1<n && b+1<n && q[a+1][b+1]!=' ' ) || (a+1<n && b-1>=0 && q[a+1][b-1]!=' ') || (a-1>=0 && b-1>=0 && q[a-1][b-1]!=' ' )
 					|| ( a-1>=0 && b+1<n && q[a-1][b+1]!=' ')|| (a+1<n && q[a+1][b]!=' ') || (a-1>=0 && q[a-1][b]!=' ')|| 
 					(b+1<n && q[a][b+1]!=' ' )||(b-1>=0 && q[a][b-1]!=' '))){
@@ -261,24 +270,26 @@ BufferedReader br = new BufferedReader (isr);
 	  }
 	  	
 	    public static boolean isValidWhithOthers(char[][] q, int a,int b,int i,int j) {
-			//comprobamos que ningun alfil la coma a ella
+	    	
+	    	
+	    	//Check bishops
   			if(q[i][j]=='A'){
   				if(i-j==a-b || i+j==a+b || j-b == i-a || j-b == a-i){
   					return false;
   				}
   			}
-  			//comprobamos que ninguna torre la coma a ella
+  			//Check Towers
   			if(q[i][j]=='T'){
   				if(i==a||b==j)
   					return false;
   			}
-  			//comprobamos que ninguna reina la coma a ella
+  			//Check queens
   			if(q[i][j]=='R'){
   				if(i-j==a-b || i+j==a+b || j-b == i-a || j-b == a-i || i==a||b==j){
   					return false;
   				}
   			}
-  			//comprobamos que ningun caballo la coma a ella	
+  			//check horses
   			if(q[i][j]=='C'){
 	  			if(i+1==a && j-2==b || i+2==a && j+1==b || i+2==a && j-1 ==b || i+1==a && j-2==b ||i-1==a && j-2==b ||i-2==a && j-1==b ||i-1==a && j+2==b|| i-2==a && j+1==b){
 	  				return false;
@@ -286,7 +297,7 @@ BufferedReader br = new BufferedReader (isr);
   			
   			}
   			
-  		//comprobamos que ningun rey la coma a ella	
+  		//check kings
   			if(q[i][j]=='C'){
 	  			if(i+1==a && j==b || i+1==a && j+1==b || i+1==a && j-1 ==b || i-1==a && j-1==b ||i-1==a && j+1==b ||i-1==a && j==b ||i==a && j+1==b|| i==a && j-1==b){
 	  				return false;
@@ -298,10 +309,45 @@ BufferedReader br = new BufferedReader (isr);
 	    
 	    
 	    
+    	private static boolean compareTables(char[][] q1,char[][] q2){
+    		
+    		for(int i =0; i<q1.length;i++){
+    	  		for(int j=0; j<q1.length;j++)
+    	  		{
+    	  			if(q1[i][j]!=q2[i][j]){
+    	  				return false;
+    	  			}
+    	  		}
+    	  		
+    	  		}
+    		return true;
+    	}
     	
     	
+    	private static boolean repitTable(char[][] q){
+    		
+    		for(int i=0;i<tables.size();i++){
+    			if(compareTables(tables.get(i), q)){
+    				return true;
+    			}
+    		}
+    		
+    		return false;
+    	}
     	
-
+	private static void rellenarTabla(char[][] q,char[][] t){
+    		
+		for(int i =0; i<q.length;i++){
+	  		for(int j=0; j<q.length;j++)
+	  		{
+	  			t[i][j]=q[i][j];
+	  				
+	  			}
+	  		}
+	  		
+	  }
+    	
   
+    	
 
 }
