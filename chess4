@@ -1,0 +1,356 @@
+package chess4;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+
+
+public class queens {
+
+	private static int N = 0;
+	private static int R = 0;
+	private static int T = 0;
+	private static int A = 0;
+	private static int C = 0;
+	private static int E = 0;
+	
+	static ArrayList<char[][]> tables;
+	
+	
+	
+    
+
+   //Print Table
+
+    public static void printQueens(char[][] q) {
+        int N = q.length;
+        if(!repitTable(q)){
+        
+        	
+        char[][] t= new char[N][N];
+        
+        rellenarTabla(q,t);
+                
+        tables.add(t);
+        
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (q[i][j] == 'T') System.out.print("R ");
+                else
+                	if (q[i][j] == 'R') System.out.print("Q ");
+                	else
+                		if (q[i][j] == 'A') System.out.print("B ");
+                		else
+                			if (q[i][j] == 'C') System.out.print("H ");
+                			else
+                    			if (q[i][j] == 'E') System.out.print("K ");
+                		else           System.out.print("* ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+        }
+    }
+
+
+  
+    public static void queen() {
+        char[][] q = new char[N][N];
+        for (int i = 0; i < q.length; i++) {
+        	for (int j = 0; j < q.length; j++) {
+        		q[i][j]=' ';
+        	}
+        }
+        queen(q, 0, 0, 0, 0, 0);
+    }
+
+    
+    public static void queen(char[][] q, int r, int t, int a, int c,int e) {
+    	
+        if (r == R && t==T && a==A && c==C && e==E) printQueens(q);
+        else {
+            for (int i = 0; i < q.length; i++) {
+            	for (int j = 0; j < q.length; j++) {
+            		//If already quens put one
+            		if(r!=R){
+            			//Try to put new queen
+            			if (isValidReina(q, i, j)){
+            				q[i][j] = 'R';
+                        	queen(q, r+1,t,a,c,e);
+                        	q[i][j] = ' ';
+                        }
+            		}
+            		else{
+            			//Try to put new tower
+            			if(t!=T){
+            				if (isValidTorre(q, i, j)){
+            					q[i][j] = 'T';
+                            	queen(q, r,t+1,a,c,e);
+                            	q[i][j] = ' ';
+                            }
+            			}
+            			else{
+            				//Try to put new bishop
+                			if(a!=A){
+                				if (isValidAlfil(q, i, j)){
+                					q[i][j] = 'A';
+                                	queen(q, r,t,a+1,c,e);
+                                	q[i][j] = ' ';
+                                }
+                			}
+                			else{
+                				//Try to put new horse
+                				if(c!=C){
+                					if (isValidCaballo(q, i, j)){
+                    					q[i][j] = 'C';
+                                    	queen(q, r,t,a,c+1,e);
+                                    	q[i][j] = ' ';
+                                    }
+                				}
+                				else{
+                					//Try to put new king
+                    				if(e!=E){
+                    					if (isValidRey(q, i, j)){
+                        					q[i][j] = 'E';
+                                        	queen(q, r,t,a,c,e+1);
+                                        	q[i][j] = ' ';
+                                        }
+                    				}
+                			}
+                				
+                		}
+            		}
+            			
+            	}
+                
+                
+            }
+        }
+    }
+    }
+
+    public static void main(String[] args) throws IOException {
+
+    	try{
+InputStreamReader isr = new InputStreamReader(System.in);
+BufferedReader br = new BufferedReader (isr);
+
+	System.out.println("Type table dimension (n*n) n:");
+	N = Integer.parseInt(br.readLine());
+
+	System.out.println("Enter nomber of Queens (Q):");
+      R = Integer.parseInt(br.readLine());
+      
+      System.out.println("Enter number of Rooks (R):");
+      T = Integer.parseInt(br.readLine());
+      
+      System.out.println("Enter number of Bishops (B):");
+      A = Integer.parseInt(br.readLine());
+      
+      System.out.println("Enter number of Knight (H):");
+      C = Integer.parseInt(br.readLine());
+      
+      System.out.println("Enter number of kings (K):");
+      E = Integer.parseInt(br.readLine());
+      
+      tables = new ArrayList<char[][]>();
+        queen();
+        
+        System.out.println("Results: ");
+        System.out.println("Results: ");
+        System.out.println("END");
+        
+    	} catch (Exception e) {
+        	System.out.println("Technical problem ocurred");
+		}
+    }
+    
+    
+    
+    public static boolean isValidTorre(char[][] q, int a,int b) {
+    	
+    	for(int i =0; i<q.length;i++){
+    		for(int j=0; j<q.length;j++)
+    		{
+    			
+    			if(q[i][j]!=' ' && (i==a||b==j)){
+					return false;
+    			}
+    			if(!isValidWhithOthers(q, a, b, i, j)){
+	  				return false;
+	  			}
+    			
+    		}
+    	}
+    	return true;
+    	    	
+    
+    }
+    
+    
+  public static boolean isValidAlfil(char[][] q, int a,int b) {
+    	
+    	for(int i =0; i<q.length;i++){
+    		for(int j=0; j<q.length;j++)
+    		{
+    			
+    			if(q[i][j]!=' ' && (i-j==a-b || i+j==a+b || j-b == i-a || j-b == a-i)){
+					return false;
+				}
+    			
+    			if(!isValidWhithOthers(q, a, b, i, j)){
+	  				return false;
+	  			}
+    	}
+    	}
+    	return true;
+    }
+  
+  public static boolean isValidReina(char[][] q, int a,int b) {
+  	
+  	for(int i =0; i<q.length;i++){
+  		for(int j=0; j<q.length;j++)
+  		{
+  			
+  			if(q[i][j]!=' ' && (i-j==a-b || i+j==a+b || j-b == i-a || j-b == a-i || i==a||b==j)){
+					return false;
+				}
+  			
+  			if(!isValidWhithOthers(q, a, b, i, j)){
+  				return false;
+  			}
+  	}
+  	}
+  	return true;
+  }
+  
+  
+  
+  public static boolean isValidCaballo(char[][] q, int a,int b) {
+	  	int n=q.length;
+	  	
+			if(q[a][b]!=' ' || ((a+1<n && b-2>=0 && q[a+1][b-2]!=' ' ) || (a+2<n && b+1<n && q[a+2][b+1]!=' ') || (a+2<n && b-1>=0 && q[a+2][b-1]!=' ' )
+					|| ( a+1<n && b+2<n && q[a+1][b+2]!=' ')|| (a-1>=0 && b-2>=0 && q[a-1][b-2]!=' ') || (a-2>=0 && b-1>=0 && q[a-2][b-1]!=' ')|| 
+					(a-1>=0 && b+2<n && q[a-1][b+2]!=' ' )||(a-2>=0 && b+1<n && q[a-2][b+1]!=' '))){
+				return false;
+			}
+	  	for(int i =0; i<q.length;i++){
+	  		for(int j=0; j<q.length;j++)
+	  		{
+	  			
+	  			
+	  			if(!isValidWhithOthers(q, a, b, i, j)){
+	  				return false;
+	  			}
+	  	
+	  		}
+	  	}
+	  	return true;
+	  }
+	  	
+  public static boolean isValidRey(char[][] q, int a,int b) {
+	  	int n=q.length;
+	  	
+			if(q[a][b]!=' ' || ((a+1<n && b+1<n && q[a+1][b+1]!=' ' ) || (a+1<n && b-1>=0 && q[a+1][b-1]!=' ') || (a-1>=0 && b-1>=0 && q[a-1][b-1]!=' ' )
+					|| ( a-1>=0 && b+1<n && q[a-1][b+1]!=' ')|| (a+1<n && q[a+1][b]!=' ') || (a-1>=0 && q[a-1][b]!=' ')|| 
+					(b+1<n && q[a][b+1]!=' ' )||(b-1>=0 && q[a][b-1]!=' '))){
+				return false;
+			}
+	  	for(int i =0; i<q.length;i++){
+	  		for(int j=0; j<q.length;j++)
+	  		{
+	  			
+	  			
+	  			if(!isValidWhithOthers(q, a, b, i, j)){
+	  				return false;
+	  			}
+	  	
+	  		}
+	  	}
+	  	return true;
+	  }
+	  	
+	    public static boolean isValidWhithOthers(char[][] q, int a,int b,int i,int j) {
+	    	
+	    	
+	    	//Check bishops
+  			if(q[i][j]=='A'){
+  				if(i-j==a-b || i+j==a+b || j-b == i-a || j-b == a-i){
+  					return false;
+  				}
+  			}
+  			//Check Towers
+  			if(q[i][j]=='T'){
+  				if(i==a||b==j)
+  					return false;
+  			}
+  			//Check queens
+  			if(q[i][j]=='R'){
+  				if(i-j==a-b || i+j==a+b || j-b == i-a || j-b == a-i || i==a||b==j){
+  					return false;
+  				}
+  			}
+  			//check horses
+  			if(q[i][j]=='C'){
+	  			if(i+1==a && j-2==b || i+2==a && j+1==b || i+2==a && j-1 ==b || i+1==a && j-2==b ||i-1==a && j-2==b ||i-2==a && j-1==b ||i-1==a && j+2==b|| i-2==a && j+1==b){
+	  				return false;
+	  			}
+  			
+  			}
+  			
+  		//check kings
+  			if(q[i][j]=='C'){
+	  			if(i+1==a && j==b || i+1==a && j+1==b || i+1==a && j-1 ==b || i-1==a && j-1==b ||i-1==a && j+1==b ||i-1==a && j==b ||i==a && j+1==b|| i==a && j-1==b){
+	  				return false;
+	  			}
+  			
+  			}
+  			return true;
+	    }
+	    
+	    
+	    
+    	private static boolean compareTables(char[][] q1,char[][] q2){
+    		
+    		for(int i =0; i<q1.length;i++){
+    	  		for(int j=0; j<q1.length;j++)
+    	  		{
+    	  			if(q1[i][j]!=q2[i][j]){
+    	  				return false;
+    	  			}
+    	  		}
+    	  		
+    	  		}
+    		return true;
+    	}
+    	
+    	
+    	private static boolean repitTable(char[][] q){
+    		
+    		for(int i=0;i<tables.size();i++){
+    			if(compareTables(tables.get(i), q)){
+    				return true;
+    			}
+    		}
+    		
+    		return false;
+    	}
+    	
+	private static void rellenarTabla(char[][] q,char[][] t){
+    		
+		for(int i =0; i<q.length;i++){
+	  		for(int j=0; j<q.length;j++)
+	  		{
+	  			t[i][j]=q[i][j];
+	  				
+	  			}
+	  		}
+	  		
+	  }
+    	
+  
+    	
+
+}
