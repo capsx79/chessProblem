@@ -37,15 +37,15 @@ public class queens {
         
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (q[i][j] == 'T') System.out.print("T ");
+                if (q[i][j] == 'T') System.out.print("R ");
                 else
-                	if (q[i][j] == 'R') System.out.print("R ");
+                	if (q[i][j] == 'R') System.out.print("Q ");
                 	else
-                		if (q[i][j] == 'A') System.out.print("A ");
+                		if (q[i][j] == 'A') System.out.print("B ");
                 		else
-                			if (q[i][j] == 'C') System.out.print("C ");
+                			if (q[i][j] == 'C') System.out.print("H ");
                 			else
-                    			if (q[i][j] == 'E') System.out.print("E ");
+                    			if (q[i][j] == 'E') System.out.print("K ");
                 		else           System.out.print("* ");
             }
             System.out.println();
@@ -140,23 +140,26 @@ BufferedReader br = new BufferedReader (isr);
 	System.out.println("Type table dimension (n*n) n:");
 	N = Integer.parseInt(br.readLine());
 
-	System.out.println("Enter nomber of queens:");
+	System.out.println("Enter nomber of Queens (Q):");
       R = Integer.parseInt(br.readLine());
       
-      System.out.println("Enter number of rocks:");
+      System.out.println("Enter number of Rooks (R):");
       T = Integer.parseInt(br.readLine());
       
-      System.out.println("Enter number of bishop:");
+      System.out.println("Enter number of Bishops (B):");
       A = Integer.parseInt(br.readLine());
       
-      System.out.println("Enter number of horses:");
+      System.out.println("Enter number of Knight (H):");
       C = Integer.parseInt(br.readLine());
       
-      System.out.println("Enter number of kings:");
+      System.out.println("Enter number of kings (K):");
       E = Integer.parseInt(br.readLine());
       
       tables = new ArrayList<char[][]>();
         queen();
+        
+        System.out.println("Results: ");
+        System.out.println("Results: ");
         System.out.println("END");
         
     	} catch (Exception e) {
